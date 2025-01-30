@@ -1,0 +1,68 @@
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
+    id "dev.flutter.flutter-gradle-plugin"
+    id "com.google.gms.google-services" // Firebase plugin for Google services
+}
+
+android {
+    namespace = "com.example.my_flutter_app"
+    compileSdk = flutter.compileSdkVersion
+    ndkVersion = flutter.ndkVersion
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
+    defaultConfig {
+        applicationId "com.flutter.data_visualization"
+        minSdk = flutter.minSdkVersion
+        targetSdk = flutter.targetSdkVersion
+        versionCode = flutter.versionCode
+        versionName = flutter.versionName
+
+        multiDexEnabled = true // Enable multidex support for large apps
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            // Signing configuration for release builds
+            signingConfig = signingConfigs.debug
+        }
+    }
+
+    buildFeatures {
+        viewBinding true // Optional: Enable view binding if you use it in native code
+    }
+}
+
+flutter {
+    source = "../.."
+}
+
+dependencies {
+    // Multidex support
+    implementation "androidx.multidex:multidex:2.0.1"
+
+    // Firebase dependencies
+    implementation platform('com.google.firebase:firebase-bom:32.0.0')
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-auth'
+
+    // Add other Firebase modules as needed
+    implementation 'com.google.firebase:firebase-firestore' // Firestore example
+    implementation 'com.google.firebase:firebase-storage'  // Firebase Storage example
+}
+
+
+apply plugin: 'com.google.gms.google-services'

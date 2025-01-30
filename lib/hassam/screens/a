@@ -1,0 +1,383 @@
+import 'package:flutter/material.dart';
+import 'dart:math';
+
+import 'LoginPage.dart';
+import 'RegisterPage.dart'; // <-- If you prefer a different name for this file, rename accordingly
+
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({Key? key}) : super(key: key);
+
+  @override
+  _RegisterPageState createState() => _RegisterPageState();
+}
+
+class _RegisterPageState extends State<RegisterPage> with TickerProviderStateMixin {
+  // Animated Gradient Controllers
+  late AnimationController _gradientController;
+  late Animation<Color?> _colorAnimation1;
+  late Animation<Color?> _colorAnimation2;
+
+  // Shape Animation Controller
+  late AnimationController _shapeController;
+  final List<AnimatedShape> _shapes = [];
+
+  // Fade/Slide Animation Controller
+  late AnimationController _fadeController;
+  late Animation<double> _fadeAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // 1. Animated Gradient
+    _gradientController = AnimationController(
+      duration: const Duration(seconds: 5),
+      vsync: this,
+    )..repeat(reverse: true);
+
+    _colorAnimation1 = ColorTween(
+      begin: Colors.blue.shade400,
+      end: Colors.blue.shade700,
+    ).animate(_gradientController);
+
+    _colorAnimation2 = ColorTween(
+      begin: Colors.blue.shade700,
+      end: Colors.blue.shade400,
+    ).animate(_gradientController);
+
+    // 2. Floating Shapes
+    _shapeController = AnimationController(
+      duration: const Duration(seconds: 20),
+      vsync: this,
+    )..repeat();
+
+    // Generate some random shapes
+    for (int i = 0; i < 5; i++) {
+      _shapes.add(
+        AnimatedShape(
+          size: Random().nextDouble() * 50 + 20,
+          color: Colors.white.withOpacity(0.1 + Random().nextDouble() * 0.2),
+          speed: Random().nextDouble() * 50 + 20,
+          direction: Random().nextBool() ? 1 : -1,
+          position: Random().nextDouble(),
+        ),
+      );
+    }
+
+    // 3. Fade/Slide Animations
+    _fadeController = AnimationController(
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    );
+
+    _fadeAnimation = CurvedAnimation(
+      parent: _fadeController,
+      curve: Curves.easeIn,
+    );
+
+    _fadeController.forward();
+  }
+
+  @override
+  void dispose() {
+    _gradientController.dispose();
+    _shapeController.dispose();
+    _fadeController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: AnimatedBuilder(
+        animation: _gradientController,
+        builder: (context, child) {
+          return Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  _colorAnimation1.value ?? Colors.blue.shade400,
+                  _colorAnimation2.value ?? Colors.blue.shade700,
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
+            child: Stack(
+              children: [
+                // Floating Shapes
+                ..._shapes.map((shape) => Positioned(
+                      left: MediaQuery.of(context).size.width *
+                          shape.position *
+                          shape.direction,
+                      top: MediaQuery.of(context).size.height * 0.25,
+                      child: AnimatedBuilder(
+                        animation: _shapeController,
+                        builder: (context, child) {
+                          double offset = (sin(_shapeController.value * 2 * pi) *
+                                  20 /
+                                  shape.speed) *
+                              shape.direction;
+                          return Transform.translate(
+                            offset: Offset(offset, 0),
+                            child: child,
+                          );
+                        },
+                        child: Container(
+                          width: shape.size,
+                          height: shape.size,
+                          decoration: BoxDecoration(
+                            color: shape.color,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      ),
+                    )),
+                SafeArea(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: FadeTransition(
+                      opacity: _fadeAnimation,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const SizedBox(height: 50),
+                          // Logo
+                          Center(
+                            child: Container(
+                              width: 100,
+                              height: 100,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    Color(0xFF2563EB),
+                                    Color(0xFF1E40AF),
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                              ),
+                              child: const Center(
+                                child: Icon(
+                                  Icons.graphic_eq,
+                                  size: 50,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+
+                          // Welcome Text
+                          const Text(
+                            "Welcome! Let's Login with your Account",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 30),
+
+                          // Social Login Buttons
+                          _buildSocialButton(
+                            label: "Continue With Google",
+                            icon: Icons.android, // placeholder icon
+                            onPressed: () {
+                              // Handle Google Login
+                            },
+                          ),
+                          const SizedBox(height: 20),
+
+                          _buildSocialButton(
+                            label: "Continue With Apple",
+                            icon: Icons.apple,
+                            onPressed: () {
+                              // Handle Apple Login
+                            },
+                          ),
+                          const SizedBox(height: 20),
+
+                          _buildSocialButton(
+                            label: "Continue With Facebook",
+                            icon: Icons.facebook,
+                            onPressed: () {
+                              // Handle Facebook Login
+                            },
+                          ),
+                          const SizedBox(height: 20),
+
+                          _buildSocialButton(
+                            label: "Continue With Twitter",
+                            icon: Icons.camera, // placeholder icon
+                            onPressed: () {
+                              // Handle Twitter Login
+                            },
+                          ),
+                          const SizedBox(height: 30),
+
+                          // Divider
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                width: 100,
+                                height: 1,
+                                color: Colors.blue[100],
+                              ),
+                              const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 10),
+                                child: Text(
+                                  "OR",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                width: 100,
+                                height: 1,
+                                color: Colors.blue[100],
+                              ),
+                            ],
+                          ),
+
+                          const SizedBox(height: 20),
+
+                          // Sign In with Password Button
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => LoginPage()),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF2563EB),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              minimumSize: const Size(double.infinity, 50),
+                            ),
+                            child: const Text(
+                              "Sign In with Password",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 20),
+
+                          // Sign Up Link
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text(
+                                "Don’t Have an Account?",
+                                style: TextStyle(
+                                  color: Colors.white70,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => SignUp(),
+                                    ),
+                                  );
+                                },
+                                child: const Text(
+                                  "Sign Up",
+                                  style: TextStyle(
+                                    color: Color(0xFF93C5FD),
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 20),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  // Helper Method to Build Social Button
+  Widget _buildSocialButton({
+    required String label,
+    IconData? icon,
+    String? iconUrl,
+    required VoidCallback onPressed,
+  }) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: const Color(0xFF1E40AF),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30),
+        ),
+        minimumSize: const Size(double.infinity, 50),
+        elevation: 0,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (iconUrl != null)
+            Image.network(
+              iconUrl,
+              width: 24,
+              height: 24,
+            )
+          else if (icon != null)
+            Icon(icon, color: Colors.white, size: 24),
+          const SizedBox(width: 15),
+          Expanded(
+            child: Text(
+              label,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// --------------------- //
+// HELPER CLASS FOR SHAPES
+// --------------------- //
+class AnimatedShape {
+  final double size;
+  final Color color;
+  final double speed;
+  final int direction; // 1 for right, -1 for left
+  final double position;
+
+  AnimatedShape({
+    required this.size,
+    required this.color,
+    required this.speed,
+    required this.direction,
+    required this.position,
+  });
+}

@@ -1,0 +1,54 @@
+name: my_flutter_app
+description: "A new Flutter project."
+
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.5.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  http: ^0.13.5
+
+  # Existing dependencies
+  visibility_detector: ^0.3.3
+  fl_chart: ^0.70.2 # Updated to the latest compatible version
+  firebase_core: ^3.10.0
+  firebase_auth: ^5.0.0
+  cloud_firestore: ^5.0.0
+  firebase_auth_web: ^5.13.5
+  shared_preferences: ^2.0.11
+  provider: ^6.0.5
+  carousel_slider: ^5.0.0
+  flutter_localizations:
+    sdk: flutter
+  vector_math: ^2.1.0
+  cupertino_icons: ^1.0.8
+  flutter_svg: ^2.0.0
+
+  # Mailer dependency for sending emails via SMTP
+  mailer: ^6.4.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+  google_fonts: ^2.1.0
+  font_awesome_flutter: ^9.1.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/pay.png
+    - assets/images/visa.png
+    - assets/images/masterc.png
+    - assets/images/amex.png
+    - assets/ # Ensure this directory exists
+    - assets/images/ # Ensure this directory exists
+    - assets/proj3/ # Ensure this directory exists
+    - assets/icons/ # Ensure this directory exists
+    - assets/proj4/ # Ensure this directory exists

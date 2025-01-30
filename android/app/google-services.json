@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "993940757247",
+    "project_id": "data-visualization-24092",
+    "storage_bucket": "data-visualization-24092.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:993940757247:android:bb78623b8d795d29c14aca",
+        "android_client_info": {
+          "package_name": "com.flutter.data_visualization"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCxD9XTJaznNgDqTTM0wQRRmZoXKm6a-y8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
